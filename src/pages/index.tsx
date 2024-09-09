@@ -6,7 +6,7 @@ export default function Home() {
   const [matcher, setMatcher] = React.useState("");
   let error = "";
   let regex;
-  const lines = value.split("\n");
+  const lines = value.length > 0 ? value.split("\n") : [];
   try {
     regex = pathToRegexp(matcher);
   } catch (e) {
@@ -35,6 +35,7 @@ export default function Home() {
           <label>
             <div className="mb-1">Matcher pattern</div>
             <textarea
+              placeholder="/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)"
               className="border border-gray-300 p-2 font-mono text-sm block w-full mb-1 rounded-sm"
               onChange={(e) => setMatcher(e.target.value)}
               value={matcher}
@@ -47,10 +48,10 @@ export default function Home() {
           )}
         </div>
         <label htmlFor="text" className="pl-[102px] block mb-1">
-          Paths to match
+          Example Paths to match
         </label>
         <div className="flex text-base">
-          <div className="leading-normal p-2 w-24 text-right">
+          <div className="leading-normal p-2 w-24 text-right text-sm font-mono">
             {matches.map((match, i) => (
               <div
                 key={i}
@@ -62,7 +63,8 @@ export default function Home() {
           </div>
 
           <textarea
-            className="border border-gray-300 p-2 leading-normal flex-grow rounded-sm"
+            className="border border-gray-300 p-2 leading-normal flex-grow rounded-sm font-mono text-sm"
+            placeholder="/_next/static/chunk.js"
             name="text"
             id="text"
             cols={30}
