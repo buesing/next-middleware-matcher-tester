@@ -11,7 +11,7 @@ export default function Home() {
     regex = pathToRegexp(matcher);
   } catch (e) {
     console.error(e);
-    error = (e as any).message;
+    error = (e as Error).message;
   }
 
   const matches = regex
