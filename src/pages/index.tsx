@@ -1,115 +1,77 @@
-import Image from "next/image";
-import localFont from "next/font/local";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import React from "react";
+import { pathToRegexp } from "path-to-regexp";
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [value, setValue] = React.useState("");
+  const [matcher, setMatcher] = React.useState("");
+  let error = "";
+  let regex;
+  const lines = value.split("\n");
+  try {
+    regex = pathToRegexp(matcher);
+  } catch (e) {
+    console.error(e);
+    error = (e as any).message;
+  }
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const matches = regex
+    ? lines.map((line) => {
+        try {
+          return regex.test(line);
+        } catch (e) {
+          return false;
+        }
+      })
+    : [];
+
+  return (
+    <div className="py-24 px-4 max-w-4xl mx-auto">
+      <h1 className="text-4xl mb-4">Next.js middleware matcher tester</h1>
+      <p className="mb-8 text-lg">
+        Tool to test your middleware matcher patterns
+      </p>
+      <form className="">
+        <div className="mb-8">
+          <label>
+            <div className="mb-1">Matcher pattern</div>
+            <textarea
+              className="border border-gray-300 p-2 font-mono text-sm block w-full mb-1 rounded-sm"
+              onChange={(e) => setMatcher(e.target.value)}
+              value={matcher}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </label>
+          {error && (
+            <p className="text-red-500 text-sm" aria-live="polite">
+              Invalid pattern: {error}
+            </p>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <label htmlFor="text" className="pl-[102px] block mb-1">
+          Paths to match
+        </label>
+        <div className="flex text-base">
+          <div className="leading-normal p-2 w-24 text-right">
+            {matches.map((match, i) => (
+              <div
+                key={i}
+                className={`font-bold ${match ? "text-green-500" : "text-red-500"}`}
+              >
+                {match ? "Match" : "No match"}
+              </div>
+            ))}
+          </div>
+
+          <textarea
+            className="border border-gray-300 p-2 leading-normal flex-grow rounded-sm"
+            name="text"
+            id="text"
+            cols={30}
+            rows={10}
+            onChange={(e) => setValue(e.target.value)}
+            value={value}
+          ></textarea>
+        </div>
+      </form>
     </div>
   );
 }
