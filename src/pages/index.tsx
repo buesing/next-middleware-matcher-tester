@@ -25,7 +25,7 @@ export default function Home() {
     : [];
 
   return (
-    <div className="py-4 px-24 max-w-4xl mx-auto min-h-screen flex flex-col">
+    <div className="p-4 max-w-4xl mx-auto min-h-screen flex flex-col">
       <div className="flex-grow">
         <h1 className="text-4xl mb-4 mt-8">
           Next.js middleware matcher tester
