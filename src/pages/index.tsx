@@ -65,9 +65,8 @@ export default function Home() {
             <h2 className="sr-only">Matches</h2>
             <div className="leading-normal p-2 text-sm font-mono absolute top-0 left-0">
               {matches.map((match, i) => (
-                <div className="min-h-[1em]" aria-live="polite">
+                <div className="min-h-[1em]" aria-live="polite" key={i}>
                   <span
-                    key={i}
                     className={`text-transparent opacity-30 ${match ? "bg-green-500" : "bg-red-500"}`}
                   >
                     <span className="sr-only">
