@@ -67,11 +67,11 @@ export default function Home() {
               {matches.map((match, i) => (
                 <div className="min-h-[1em]" aria-live="polite" key={i}>
                   <span
-                    className={`text-transparent opacity-30 ${match ? "bg-green-500" : "bg-red-500"}`}
+                    className={`text-transparent opacity-30 whitespace-pre ${match ? "bg-green-500" : "bg-red-500"}`}
                   >
                     <span className="sr-only">
                       {match ? "Match" : "No match"}:
-                    </span>{" "}
+                    </span>
                     {lines[i] || <wbr />}
                   </span>
                 </div>
